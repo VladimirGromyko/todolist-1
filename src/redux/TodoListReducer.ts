@@ -32,8 +32,8 @@ type GeneralType = removeTodoListACType |
 
 type removeTodoListACType = ReturnType<typeof removeTodoListAC>
 type addTodoListACType = ReturnType<typeof addTodoListAC>
-type addFilterACType = ReturnType<typeof addFilterAC>
-type updateTodoListACType = ReturnType<typeof updateTodoListAC>
+export type addFilterACType = ReturnType<typeof addFilterAC>
+export type updateTodoListACType = ReturnType<typeof updateTodoListAC>
 
 export const removeTodoListAC = (todoListId: string) => {
     return {
