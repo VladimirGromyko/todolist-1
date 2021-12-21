@@ -47,11 +47,9 @@ export const TaskReducer = (state = initialTasks, action: GeneralType) => {
             return {...state, [action.todoListId]: newTask}
         }
         case 'ADD_TODOLIST': {
-            console.log("action add-todoListId :", action.todoListId)
             return {...state, [action.todoListId]: []}
         }
         case 'REMOVE_TODOLIST': {
-            console.log("action.todoListId: ", action.todoListId)
             let newState = {...state}
             delete newState[action.todoListId]
             return newState

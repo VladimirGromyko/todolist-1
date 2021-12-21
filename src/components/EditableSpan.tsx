@@ -1,4 +1,4 @@
-import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
+import React, {ChangeEvent, KeyboardEvent, useCallback, useState} from 'react';
 import s from "../TodoList.module.css";
 
 type EditableSpanPropsType = {
@@ -7,7 +7,9 @@ type EditableSpanPropsType = {
     callBackName: (title: string) => void
 }
 
-export const EditableSpan = ({isDone, title, callBackName}: EditableSpanPropsType) => {
+export const EditableSpan = React.memo(({isDone, title, callBackName}: EditableSpanPropsType) => {
+    console.log("EditableSpan")
+
     const [edit, setEdit] = useState(false)
     const [newTitle, setNewTitle] = useState(title)
 
@@ -22,12 +24,13 @@ export const EditableSpan = ({isDone, title, callBackName}: EditableSpanPropsTyp
     }
     const editTrue = () => setEdit(true)
 
-    const updateTitleTask = () => {
+    const updateTitleTask = useCallback(() => {
         let updateTitle = newTitle.trim()
         if (updateTitle) {
             callBackName(updateTitle)
         }
-    }
+    },[callBackName])
+
     const editFalse = () => {
         setEdit(false)
         updateTitleTask()
@@ -47,4 +50,4 @@ export const EditableSpan = ({isDone, title, callBackName}: EditableSpanPropsTyp
               </span>
 
     );
-};
+})

@@ -4,8 +4,7 @@ import s from './../TodoList.module.css'
 type AddItemFormPropsType = {
     addTask: (title: string) => void
 }
-export const AddItemForm = ({addTask, ...props}: AddItemFormPropsType) => {
-
+export const AddItemForm = React.memo(({addTask, ...props}: AddItemFormPropsType) => {
     const [newTitle, setNewTitle] = useState('')
     const [error, setError] = useState<string | boolean>('Title is required')
 
@@ -58,4 +57,4 @@ export const AddItemForm = ({addTask, ...props}: AddItemFormPropsType) => {
             {error && <div className={s.errorMessage}>{error}</div>}
         </div>
     )
-}
+})
