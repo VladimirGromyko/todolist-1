@@ -8,7 +8,6 @@ type EditableSpanPropsType = {
 }
 
 export const EditableSpan = React.memo(({isDone, title, callBackName}: EditableSpanPropsType) => {
-    console.log("EditableSpan")
 
     const [edit, setEdit] = useState(false)
     const [newTitle, setNewTitle] = useState(title)
@@ -24,12 +23,12 @@ export const EditableSpan = React.memo(({isDone, title, callBackName}: EditableS
     }
     const editTrue = () => setEdit(true)
 
-    const updateTitleTask = useCallback(() => {
+    const updateTitleTask = () => {
         let updateTitle = newTitle.trim()
         if (updateTitle) {
             callBackName(updateTitle)
         }
-    },[callBackName])
+    }
 
     const editFalse = () => {
         setEdit(false)

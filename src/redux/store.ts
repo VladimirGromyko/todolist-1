@@ -3,8 +3,8 @@ import { TaskReducer } from "./TaskReducer";
 import { TodoListReducer } from "./TodoListReducer";
 
 let rootReducers = combineReducers({
-        task: TaskReducer,
-        todoList: TodoListReducer
+    todoList: TodoListReducer,
+    task: TaskReducer
     }
 )
 export type RootReducersType = ReturnType<typeof rootReducers>
