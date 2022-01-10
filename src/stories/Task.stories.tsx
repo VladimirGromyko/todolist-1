@@ -12,11 +12,11 @@ export default {
     title: 'TODOLISTS/Task',
     component: Task,
     // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
-args: {
-    removeTask: action("remove task"),
-    changeStatus: action("change status"),
-    updateTask: action("change title")
-},
+    args: {
+        removeTask: action("remove task"),
+        changeStatus: action("change status"),
+        updateTask: action("change title")
+    },
 } as ComponentMeta<typeof Task>;
 
 // More on component templates: https://storybook.js.org/docs/react/writing-stories/introduction#using-args
