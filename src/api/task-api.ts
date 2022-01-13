@@ -9,39 +9,67 @@ const instance = axios.create({
 })
 export const taskApi = {
     getTasks(todolistId: string) {
-        return instance.get<TaskType>(`/todo-lists/${todolistId}/tasks`)
+        return instance.get<ServerTaskType>(`/todo-lists/${todolistId}/tasks`)
     },
     createTask(todolistId: string, title: string) {
-        return instance.post(`/todo-lists/${todolistId}/tasks`, {title})
+        return instance.post<{ title: string }, AxiosResponse<CommonTaskType<{ item: TaskItemsType }>>>
+        (`/todo-lists/${todolistId}/tasks`, {title})
     },
     deleteTask(todolistId: string, taskId: string) {
         return instance.delete<CommonTaskType>(`todo-lists/${todolistId}/tasks/${taskId}`)
     },
-    updateTaskTitle(todolistId: string, taskId: string, title: string) {
-        return instance.put<CommonTaskType>(`todo-lists/${todolistId}/tasks/${taskId}`, {title})
+    updateTask(todolistId: string, taskId: string, model: UpdateTaskModelType) {
+        return instance.put<{ model: UpdateTaskModelType }, AxiosResponse<CommonTaskType<{ item: TaskItemsType }>>>
+        (`todo-lists/${todolistId}/tasks/${taskId}`, model)
     },
 }
-type taskItemsType = {
+export type TaskItemsType = {
     "id": string,
     "title": string,
-    "description": null | string,
+    "description": string,
     "todoListId": string,
     "order": number,
-    "status": number,
-    "priority": number,
-    "startDate": null | string,
-    "deadline": null | string,
+    "status": TaskStatuses
+    "priority": TaskPriorities,
+    "startDate": string,
+    "deadline": string,
     "addedDate": string
 }
-type TaskType = {
+export type ServerTaskType = {
     error: null | string
-    items: taskItemsType[]
+    items: TaskItemsType[]
     totalCount: number
 }
-type CommonTaskType = {
-    data: { item: taskItemsType }
+type CommonTaskType<D = {}> = {
+    data: D//{ item: taskItemsType }
     resultCode: number
     messages: Array<string>
+    fieldsError: Array<string>
+}
+
+export enum TaskStatuses {
+    New = 0,
+    InProgress = 1,
+    Completed = 2,
+    Draft = 3
+}
+
+export enum TaskPriorities {
+    Low = 0,
+    Middle = 1,
+    Hi = 2,
+    Urgently = 3,
+    Later = 4
+}
+
+export type UpdateTaskModelType = {
+    title: string
+    description: string
+    //completed: boolean
+    status: TaskStatuses
+    priority: TaskPriorities
+    startDate: string
+    deadline: string
 }
 
 // type CommonTodoType<D = {}> = {

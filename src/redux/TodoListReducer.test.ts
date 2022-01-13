@@ -38,7 +38,7 @@ test.skip('correct todolist should be removed', () => {
 test('correct todolist should be added', () => {
 
 
-    const endState = TodoListReducer(startState, addTodoListAC(newTodolistTitle))
+    const endState = TodoListReducer(startState, addTodoListAC(newTodolistTitle, 'todo-1'))
 
     expect(endState.length).toBe(3);
     expect(endState[0].title).toBe(newTodolistTitle);

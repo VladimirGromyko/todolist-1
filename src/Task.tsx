@@ -1,13 +1,15 @@
 import React, {ChangeEvent, useCallback} from 'react';
 import {EditableSpan} from "./components/EditableSpan";
-import {TaskType} from "./App";
+import {TaskItemsType, TaskStatuses} from "./api/task-api";
 
 export type TaskPropsType = {
     todoListId: string,
-    task: TaskType
+    task: TaskItemsType
+    // task: TaskType
     todoListTitle: string,
     removeTask: (todoListId: string, id: string) => void
-    changeStatus: (todoListId: string, id: string, status: boolean) => void
+    changeStatus: (todoListId: string, id: string, status: TaskStatuses) => void
+    // changeStatus: (todoListId: string, id: string, status: boolean) => void
     updateTask: (todoListId: string, id: string, title: string) => void
 }
 
@@ -22,7 +24,9 @@ export const Task = React.memo(({
 
     const onChangeCheckboxHandler = useCallback(
         (e: ChangeEvent<HTMLInputElement>) => {
-            changeStatus(todoListId, task.id, e.currentTarget.checked)
+            let status = e.currentTarget.checked ? TaskStatuses.Completed: TaskStatuses.New
+            changeStatus(todoListId, task.id, status)
+            // changeStatus(todoListId, task.id, e.currentTarget.checked)
         }, [changeStatus, todoListId, task.id])
 
     const updateTaskHandler = useCallback((taskTitle: string) => {
@@ -31,11 +35,14 @@ export const Task = React.memo(({
 
     return <div>
         <input type="checkbox"
-               checked={task.isDone}
+               checked={task.status === TaskStatuses.Completed}
+               // checked={task.status > 0 ? true : false}
+               // checked={task.isDone}
                onChange={onChangeCheckboxHandler}
         />
         <EditableSpan
-            isDone={task.isDone}
+            status={task.status}
+            // isDone={task.isDone}
             title={task.title}
             callBackName={updateTaskHandler}
         />

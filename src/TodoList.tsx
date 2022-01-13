@@ -1,19 +1,22 @@
-import React, {ChangeEvent, useCallback} from 'react'
-import {FilterType, TaskType} from "./App";
+import React, {useCallback, useEffect} from 'react'
+import {FilterType} from "./App";
 import {Button} from "./components/Button";
 import {AddItemForm} from "./components/AddItemForm";
 import {EditableSpan} from "./components/EditableSpan";
 import {Task} from "./Task";
+import {fetchTasksTС} from "./redux/TaskReducer";
+import {useDispatch} from "react-redux";
+import {TaskItemsType, TaskStatuses} from "./api/task-api";
 
 
 type TodoListPropsType = {
     todoListId: string
     title: string
-    tasks: Array<TaskType>
+    tasks: Array<TaskItemsType>
     removeTask: (todoListId: string, id: string) => void
     addFilter: (todoListId: string, value: FilterType) => void
     addTask: (todoListId: string, title: string) => void
-    changeStatus: (todoListId: string, id: string, status: boolean) => void
+    changeStatus: (todoListId: string, id: string, status: TaskStatuses) => void
     filter: FilterType
     removeTodoList: (todoListId: string) => void
     updateTask: (todoListId: string, id: string, title: string) => void
@@ -25,9 +28,10 @@ export const TodoList = React.memo(({
                                         updateTask, updateTodoList, ...props
                                     }: TodoListPropsType) => {
 
-    const addFilterTaskHandler = useCallback((todoListId: string, value: FilterType) => {
-        addFilter(todoListId, value)
-    }, [filter, todoListId])
+    let dispatch = useDispatch()
+    useEffect(() => {
+        dispatch(fetchTasksTС(todoListId))
+    }, [])
 
     const removeTodoListHandler = useCallback((todoListId: string) => {
         removeTodoList(todoListId)
@@ -43,21 +47,21 @@ export const TodoList = React.memo(({
 
     let newTask = tasks
     if (filter === "Active") {
-        newTask = newTask.filter(t_el => !t_el.isDone)
+        newTask = newTask.filter(t_el => !t_el.status)
     }
     if (filter === "Completed") {
-        newTask = newTask.filter(t_el => t_el.isDone)
+        newTask = newTask.filter(t_el => t_el.status)
     }
 
     const addAllFilterTaskHandler = useCallback(() => {
         addFilter(todoListId, 'All')
-    },[addFilter, todoListId])
+    }, [addFilter, todoListId])
     const addActiveFilterTaskHandler = useCallback(() => {
         addFilter(todoListId, 'Active')
-    },[addFilter, todoListId])
+    }, [addFilter, todoListId])
     const addCompletedFilterTaskHandler = useCallback(() => {
         addFilter(todoListId, 'Completed')
-    },[addFilter, todoListId])
+    }, [addFilter, todoListId])
 
 
     const newTasks = newTask.map(el => {
@@ -75,7 +79,8 @@ export const TodoList = React.memo(({
     return (
         <div>
             <h3>
-                <EditableSpan isDone={false}
+                <EditableSpan status={0}
+
                               title={title}
                               callBackName={updateTodoListHandler}/>
                 <button onClick={() => removeTodoListHandler(todoListId)}>X</button>

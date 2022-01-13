@@ -1,13 +1,16 @@
 import React, {ChangeEvent, KeyboardEvent, useCallback, useState} from 'react';
 import s from "../TodoList.module.css";
+import {TaskStatuses} from "../api/task-api";
 
 type EditableSpanPropsType = {
-    isDone: boolean
-    title: string
+    status: TaskStatuses,
+    // isDone: boolean
+    title: string,
     callBackName: (title: string) => void
 }
 
-export const EditableSpan = React.memo(({isDone, title, callBackName}: EditableSpanPropsType) => {
+export const EditableSpan = React.memo(({status, title, callBackName}: EditableSpanPropsType) => {
+// export const EditableSpan = React.memo(({isDone, title, callBackName}: EditableSpanPropsType) => {
 
     const [edit, setEdit] = useState(false)
     const [newTitle, setNewTitle] = useState(title)
@@ -44,7 +47,8 @@ export const EditableSpan = React.memo(({isDone, title, callBackName}: EditableS
                      onKeyPress={onKeyPressTaskHandler}
 
             />
-            : <span className={isDone ? s.isDone : ''}
+            : <span className={status ? s.isDone : ''}
+            // : <span className={isDone ? s.isDone : ''}
                     onDoubleClick={editTrue}>{title}
               </span>
 

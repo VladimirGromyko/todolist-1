@@ -6,6 +6,7 @@ import {AddItemForm} from "../components/AddItemForm";
 import {action} from "@storybook/addon-actions";
 import {Task} from "../Task";
 import {TaskType} from "../App";
+import {v1} from "uuid";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export
 export default {
@@ -28,19 +29,46 @@ export const TaskIsNotDoneStory = Template.bind({});
 TaskIsDoneStory.args = {
     todoListId: '1',
     task: {
-        id: '2',
-        title: "JS",
-        isDone: true
+        //     id: '2',
+        //     title: "JS",
+        //     isDone: true
+        // },
+
+// {
+        "id": v1(),
+        "title": '"CSS"',
+        "description": '',
+        "todoListId": 'todolistId1',
+        "order": 0,
+        "status": 0,
+        "priority": 1,
+        "startDate": '',
+        "deadline": '',
+        "addedDate": ''
     },
+
     todoListTitle: "What to learn",
 };
 
 TaskIsNotDoneStory.args = {
     todoListId: '1',
     task: {
-        id: '12',
-        title: "React",
-        isDone: false
-    },
+    //     id: '12',
+    //     title: "React",
+    //     isDone: false
+    // },
+
+// {
+    "id": v1(),
+    "title": '"JS"',
+    "description": '',
+    "todoListId": 'todolistId1',
+    "order": 0,
+    "status": 2,
+    "priority": 1,
+    "startDate": '',
+    "deadline": '',
+    "addedDate": ''
+},
     todoListTitle: "What to learn",
 };

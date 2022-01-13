@@ -9,36 +9,31 @@ export const AddItemForm = React.memo(({addTask, ...props}: AddItemFormPropsType
     const [error, setError] = useState<string | boolean>('Title is required')
 
     const addTaskHandler = () => {
-
         let trimNewTitle = newTitle.trim()
-        if (trimNewTitle && trimNewTitle.length < 15) {
-
+        if (trimNewTitle && trimNewTitle.length < 25) {
             addTask(trimNewTitle)
             setNewTitle('')
             setError('Title is required')
-        } else if (trimNewTitle.length > 15) {
+        } else if (trimNewTitle.length > 25) {
         } else {
             setError('Title is required')
             setNewTitle('')
         }
     }
-
     const onChangeTaskHandler = (e: ChangeEvent<HTMLInputElement>) => {
         setNewTitle(e.currentTarget.value)
 
         if (e.currentTarget.value.trim().length < 1) {
             setError('No title! Please enter title')
-        } else if (newTitle.trim().length >= 15) {
+        } else if (newTitle.trim().length >= 25) {
             setError('Title is too long')
         } else {
             setError(false)
         }
     }
-
     const onKeyPressTaskHandler = (e: KeyboardEvent<HTMLInputElement>) => {
-        // if (e.ctrlKey) {
         if (e.key === 'Enter') {
-            if (newTitle.trim().length < 15) {
+            if (newTitle.trim().length < 25) {
                 addTaskHandler()
                 setNewTitle('')
                 setError('Title is required')
