@@ -1,4 +1,5 @@
 import axios, {AxiosResponse} from "axios";
+import {ResponseType} from "./todolist-api";
 
 const instance = axios.create({
     baseURL: 'https://social-network.samuraijs.com/api/1.1/',
@@ -12,14 +13,14 @@ export const taskApi = {
         return instance.get<ServerTaskType>(`/todo-lists/${todolistId}/tasks`)
     },
     createTask(todolistId: string, title: string) {
-        return instance.post<{ title: string }, AxiosResponse<CommonTaskType<{ item: TaskItemsType }>>>
+        return instance.post<{ title: string }, AxiosResponse<ResponseType<{ item: TaskItemsType }>>>
         (`/todo-lists/${todolistId}/tasks`, {title})
     },
     deleteTask(todolistId: string, taskId: string) {
-        return instance.delete<CommonTaskType>(`todo-lists/${todolistId}/tasks/${taskId}`)
+        return instance.delete<ResponseType>(`todo-lists/${todolistId}/tasks/${taskId}`)
     },
     updateTask(todolistId: string, taskId: string, model: UpdateTaskModelType) {
-        return instance.put<{ model: UpdateTaskModelType }, AxiosResponse<CommonTaskType<{ item: TaskItemsType }>>>
+        return instance.put<{ model: UpdateTaskModelType }, AxiosResponse<ResponseType<{ item: TaskItemsType }>>>
         (`todo-lists/${todolistId}/tasks/${taskId}`, model)
     },
 }
@@ -39,12 +40,6 @@ export type ServerTaskType = {
     error: null | string
     items: TaskItemsType[]
     totalCount: number
-}
-type CommonTaskType<D = {}> = {
-    data: D//{ item: taskItemsType }
-    resultCode: number
-    messages: Array<string>
-    fieldsError: Array<string>
 }
 
 export enum TaskStatuses {

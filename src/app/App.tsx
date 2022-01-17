@@ -1,15 +1,19 @@
 import React, {useCallback, useEffect} from 'react'
 import './App.css';
-import {TodoList} from "./TodoList";
-import {AddItemForm} from "./components/AddItemForm";
-import {addTaskTC, removeTaskTС, updateTaskTitleAndStatusTC} from './redux/TaskReducer';
+import {TodoList} from "../TodoList";
+import {AddItemForm} from "../components/AddItemForm";
+import {addTaskTC, removeTaskTС, updateTaskTitleAndStatusTC} from '../redux/TaskReducer';
 import {
     addFilterAC, addTodoListTC, fetchTodoListsTC,
     removeTodoListTC, updateTodoListTC
-} from './redux/TodoListReducer';
+} from '../redux/TodoListReducer';
 import {useDispatch, useSelector} from 'react-redux';
-import {RootReducersType} from './redux/store';
-import {TaskItemsType, TaskStatuses} from "./api/task-api";
+import {RootReducersType, useAppSelector} from './store';
+import {TaskItemsType, TaskStatuses} from "../api/task-api";
+import {RequestStatusType} from "./app-reducer";
+import LinearProgress from "@mui/material/LinearProgress";
+import {ErrorSnackbar} from "../components/ErrorSnackbar/ErrorSnackbar";
+
 
 export type TaskType = {
     id: string
@@ -21,18 +25,22 @@ export type FilterType = 'All' | 'Active' | 'Completed'
 export type TodoListsTitleType = {
     id: string,
     title: string,
-    filter: FilterType
+    // filter: FilterType
 }
 
 export type TodoListStateType = TodoListsTitleType &
     {
         filter: FilterType
+        entityStatus: RequestStatusType
     }
 export type TasksStateType = {
     [key: string]: Array<TaskItemsType>
 }
 
 function App() {
+
+    // const status = useSelector< RootReducersType, RequestStatusType>(state => state.app.status)
+    const status = useAppSelector<RequestStatusType>(state => state.app.status)
 
     let dispatch = useDispatch()
 
@@ -70,8 +78,13 @@ function App() {
         dispatch(addTodoListTC(title))
     }, [dispatch])
 
+
     return (
         <div className="App">
+            <LinearProgress/>
+            {status === "loading" && <div className="linePreloader"></div>}
+
+
             <AddItemForm addTask={addTodoList}/>
             {todoLists.map(m => {
                 return (
@@ -79,6 +92,7 @@ function App() {
                         key={m.id}
                         todoListId={m.id}
                         title={m.title}
+                        entityStatus={m.entityStatus}
                         tasks={tasks[m.id]}
                         removeTask={removeTask}
                         addFilter={addFilter}
@@ -91,6 +105,7 @@ function App() {
                     />
                 )
             })}
+            <ErrorSnackbar/>
         </div>
     )
 }

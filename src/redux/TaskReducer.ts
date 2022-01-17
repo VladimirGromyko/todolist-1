@@ -1,8 +1,11 @@
-import {TasksStateType, TaskType} from '../App';
+import {TasksStateType} from '../app/App';
 import {addTodoListACType, removeTodoListACType, setTodoListsACType} from './TodoListReducer';
 import {Dispatch} from "redux";
-import {RootReducersType} from "./store";
-import {taskApi, TaskItemsType, TaskPriorities, TaskStatuses, UpdateTaskModelType} from "../api/task-api";
+import {RootReducersType} from "../app/store";
+import {taskApi, TaskItemsType, TaskStatuses, UpdateTaskModelType} from "../api/task-api";
+import {setAppErrorACType, setAppStatusAC, SetAppStatusACType} from "../app/app-reducer";
+import {AxiosError} from "axios";
+import {handleServerAppError, handleServerNetworkError} from "../utils/error-utils";
 
 let initialTasks: TasksStateType = {
     /* [todoLists1]: [
@@ -66,7 +69,7 @@ export const TaskReducer = (state = initialTasks, action: GeneralType): TasksSta
     }
 }
 
-type GeneralType = RemoveTaskACType
+export type GeneralType = RemoveTaskACType
     | AddTaskACType
     | ChangeStatusACType
     | updateTaskACType
@@ -74,9 +77,11 @@ type GeneralType = RemoveTaskACType
     | removeTodoListACType
     | setTodoListsACType
     | setTaskACType
+    | SetAppStatusACType
+    | setAppErrorACType
 
 type RemoveTaskACType = ReturnType<typeof removeTaskAC>
-type AddTaskACType = ReturnType<typeof addTaskAC>
+export type AddTaskACType = ReturnType<typeof addTaskAC>
 type ChangeStatusACType = ReturnType<typeof changeStatusAC>
 type updateTaskACType = ReturnType<typeof updateTaskAC>
 type setTaskACType = ReturnType<typeof setTaskAC>
@@ -106,33 +111,46 @@ export const setTaskAC = (todoListId: string, tasks: TaskItemsType[]) => {
 }
 
 export const fetchTasksTС = (todoListId: string) =>
-    (dispatch: Dispatch, getState: () => RootReducersType): void => {
+    (dispatch: Dispatch<GeneralType>, getState: () => RootReducersType): void => {
+        dispatch(setAppStatusAC('loading'))
         taskApi.getTasks(todoListId)
             .then((res) => {
                 dispatch(setTaskAC(todoListId, res.data.items))
+                dispatch(setAppStatusAC('succeeded'))
             })
     }
 export const removeTaskTС = (todoListId: string, taskId: string) =>
-    (dispatch: Dispatch, getState: () => RootReducersType): void => {
+    (dispatch: Dispatch<GeneralType>, getState: () => RootReducersType): void => {
+        dispatch(setAppStatusAC('loading'))
         taskApi.deleteTask(todoListId, taskId)
             .then((res) => {
                 if (res.data.resultCode === 0) {
+                    dispatch(setAppStatusAC('succeeded'))
                     dispatch(removeTaskAC(todoListId, taskId))
                 }
             })
     }
 export const addTaskTC = (todolistId: string, title: string) =>
-    (dispatch: Dispatch, getState: () => RootReducersType): void => {
+    (dispatch: Dispatch<GeneralType>, getState: () => RootReducersType): void => {
+        dispatch(setAppStatusAC('loading'))
         taskApi.createTask(todolistId, title)
             .then((res) => {
-                let task = res.data.data.item
-                dispatch(addTaskAC(task))
+                if (res.data.resultCode === 0) {
+                    dispatch(setAppStatusAC('succeeded'))
+                    dispatch(addTaskAC(res.data.data.item))
+                } else {
+                    handleServerAppError(dispatch, res.data)
+                }
+            })
+            .catch((err: AxiosError) => {
+                handleServerNetworkError(dispatch, err.message)
             })
     }
 export const updateTaskTitleAndStatusTC = (todolistId: string, taskId: string,
                                            model: UpdateTaskModelType["status"]
                                                | UpdateTaskModelType["title"]) =>
-    (dispatch: Dispatch, getState: () => RootReducersType): void => {
+    (dispatch: Dispatch<GeneralType>, getState: () => RootReducersType): void => {
+        dispatch(setAppStatusAC('loading'))
         const tasksForCurrentTodo = getState().task[todolistId]
         const currentTask = tasksForCurrentTodo.find((task) => task.id === taskId)
         if (currentTask) {
@@ -158,11 +176,19 @@ export const updateTaskTitleAndStatusTC = (todolistId: string, taskId: string,
             }
             taskApi.updateTask(todolistId, taskId, mod)
                 .then((res) => {
-                    if (typeof model !== 'string') {
-                        dispatch(changeStatusAC(todolistId, taskId, model))
+                    if (res.data.resultCode === 0) {
+                        if (typeof model !== 'string') {
+                            dispatch(changeStatusAC(todolistId, taskId, model))
+                        } else {
+                            dispatch(updateTaskAC(todolistId, taskId, model))
+                        }
+                        dispatch(setAppStatusAC('succeeded'))
                     } else {
-                        dispatch(updateTaskAC(todolistId, taskId, model))
+                        handleServerAppError(dispatch, res.data)
                     }
+                })
+                .catch((err: AxiosError) => {
+                    handleServerNetworkError(dispatch, err.message)
                 })
         }
     }

@@ -1,6 +1,8 @@
 import React, {ChangeEvent, useCallback} from 'react';
 import {EditableSpan} from "./components/EditableSpan";
 import {TaskItemsType, TaskStatuses} from "./api/task-api";
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 export type TaskPropsType = {
     todoListId: string,
@@ -46,7 +48,12 @@ export const Task = React.memo(({
             title={task.title}
             callBackName={updateTaskHandler}
         />
-        <button onClick={removeTaskHandler}>X</button>
+        <IconButton aria-label="delete" size="small">
+            <DeleteIcon fontSize="inherit"
+                        onClick={removeTaskHandler}/>
+        </IconButton>
+
+{/*        <button onClick={removeTaskHandler}>X</button>*/}
     </div>
 })
 

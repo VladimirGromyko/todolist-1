@@ -5,7 +5,7 @@ import {Button} from './Button';
 import {AddItemForm} from "../components/AddItemForm";
 import {action} from "@storybook/addon-actions";
 import {Task} from "../Task";
-import {TaskType} from "../App";
+import {TaskType} from "../app/App";
 import {v1} from "uuid";
 
 // More on default export: https://storybook.js.org/docs/react/writing-stories/introduction#default-export

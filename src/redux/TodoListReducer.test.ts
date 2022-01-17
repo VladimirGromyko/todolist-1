@@ -1,5 +1,5 @@
 import {v1} from 'uuid';
-import {FilterType, TodoListsTitleType} from '../App';
+import {FilterType, TodoListStateType} from '../app/App';
 import {
     addFilterACType,
     addTodoListAC,
@@ -11,7 +11,7 @@ import {
 
 let todolistId1: string
 let todolistId2: string
-let startState: Array<TodoListsTitleType>
+let startState: Array<TodoListStateType>
 let newTodolistTitle: string
 let newTodolistId: string
 let newFilter: FilterType
@@ -24,8 +24,8 @@ beforeEach(() => {
     newFilter = "Completed"
 
     startState = [
-        {id: todolistId1, title: "What to learn", filter: "All"},
-        {id: todolistId2, title: "What to buy", filter: "All"}
+        {id: todolistId1, title: "What to learn", filter: "All",entityStatus: 'idle'},
+        {id: todolistId2, title: "What to buy", filter: "All",entityStatus: 'idle'}
     ]
 })
 
@@ -58,7 +58,6 @@ test.skip('correct todolist should change its name', () => {
     expect(endState[1].title).toBe(newTodolistTitle);
 });
 test.skip('correct filter of todolist should be changed', () => {
-
     const action: addFilterACType = {
         type: 'ADD_FILTER',
         todoListId: todolistId2,

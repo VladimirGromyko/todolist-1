@@ -12,7 +12,7 @@ export default {
     // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
     argTypes: {
         addTask: {
-            description: 'Button inside form clicked'
+            description: 'Buttons inside form clicked'
         },
     },
 } as ComponentMeta<typeof AddItemForm>;
@@ -23,5 +23,5 @@ const Template: ComponentStory<typeof AddItemForm> = (args) => <AddItemForm {...
 export const AddItemFormStory = Template.bind({});
 // More on args: https://storybook.js.org/docs/react/writing-stories/args
 AddItemFormStory.args = {
-  addTask: action('Button inside form clicked')
+  addTask: action('Buttons inside form clicked')
 };

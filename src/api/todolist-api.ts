@@ -12,15 +12,15 @@ export const todolistApi = {
         return instance.get<Array<TodoType>>('todo-lists',)
     },
     createTodo(title: string) {
-        return instance.post<CommonTodoType<{ item: TodoType }>,
-            AxiosResponse<CommonTodoType<{ item: TodoType }>>, { title: string }>
+        return instance.post<ResponseType<{ item: TodoType }>,
+            AxiosResponse<ResponseType<{ item: TodoType }>>, { title: string }>
         ('todo-lists', {title})
     },
     deleteTodo(todolistId: string) {
-        return instance.delete<CommonTodoType>(`todo-lists/${todolistId}`)
+        return instance.delete<ResponseType>(`todo-lists/${todolistId}`)
     },
     updateTodoTitle(todolistId: string, title: string) {
-        return instance.put<CommonTodoType, AxiosResponse<CommonTodoType>, { title: string }>
+        return instance.put<ResponseType, AxiosResponse<ResponseType>, { title: string }>
         (`todo-lists/${todolistId}`, {title})
     },
 }
@@ -30,7 +30,7 @@ export type TodoType = {
     order: number
     title: string
 }
-type CommonTodoType<D = {}> = {
+export type ResponseType<D = {}> = {
     resultCode: number
     messages: Array<string>
     fieldsError: Array<string>

@@ -1,17 +1,21 @@
 import React, {useCallback, useEffect} from 'react'
-import {FilterType} from "./App";
-import {Button} from "./components/Button";
+import {FilterType} from "./app/App";
+import {Buttons} from "./components/Buttons";
 import {AddItemForm} from "./components/AddItemForm";
 import {EditableSpan} from "./components/EditableSpan";
 import {Task} from "./Task";
 import {fetchTasksTС} from "./redux/TaskReducer";
 import {useDispatch} from "react-redux";
 import {TaskItemsType, TaskStatuses} from "./api/task-api";
+import IconButton from '@mui/material/IconButton';
+import Delete from '@material-ui/icons/Delete';
+import {RequestStatusType} from "./app/app-reducer";
 
 
 type TodoListPropsType = {
     todoListId: string
     title: string
+    entityStatus: RequestStatusType
     tasks: Array<TaskItemsType>
     removeTask: (todoListId: string, id: string) => void
     addFilter: (todoListId: string, value: FilterType) => void
@@ -23,19 +27,20 @@ type TodoListPropsType = {
     updateTodoList: (todoListId: string, title: string) => void
 }
 export const TodoList = React.memo(({
-                                        todoListId, title, tasks, removeTask, addFilter,
-                                        addTask, changeStatus, filter, removeTodoList,
+                                        todoListId, title, entityStatus, tasks, removeTask,
+                                        addFilter, addTask, changeStatus, filter, removeTodoList,
                                         updateTask, updateTodoList, ...props
                                     }: TodoListPropsType) => {
 
     let dispatch = useDispatch()
     useEffect(() => {
         dispatch(fetchTasksTС(todoListId))
-    }, [])
+    }, [dispatch, todoListId])
 
     const removeTodoListHandler = useCallback((todoListId: string) => {
         removeTodoList(todoListId)
-    }, [todoListId])
+    }, [removeTodoList])
+
     const addTaskHandler = useCallback((title: string) => {
         addTask(todoListId, title)
     }, [addTask, todoListId])
@@ -80,19 +85,25 @@ export const TodoList = React.memo(({
         <div>
             <h3>
                 <EditableSpan status={0}
-
                               title={title}
                               callBackName={updateTodoListHandler}/>
-                <button onClick={() => removeTodoListHandler(todoListId)}>X</button>
+
+                <IconButton size="small"
+                            onClick={() => removeTodoListHandler(todoListId)}
+                            disabled={entityStatus === 'loading'}
+                >
+                    <Delete/>
+                </IconButton>
             </h3>
-            <AddItemForm addTask={addTaskHandler}/>
+            <AddItemForm addTask={addTaskHandler}
+                         entityStatus={entityStatus}/>
             <div>
                 {newTasks}
             </div>
             <div>
-                <Button name={'All'} filter={filter} callBack={addAllFilterTaskHandler}/>
-                <Button name={'Active'} filter={filter} callBack={addActiveFilterTaskHandler}/>
-                <Button name={'Completed'} filter={filter} callBack={addCompletedFilterTaskHandler}/>
+                <Buttons name={'All'} filter={filter} callBack={addAllFilterTaskHandler}/>
+                <Buttons name={'Active'} filter={filter} callBack={addActiveFilterTaskHandler}/>
+                <Buttons name={'Completed'} filter={filter} callBack={addCompletedFilterTaskHandler}/>
             </div>
         </div>
     )
