@@ -1,20 +1,23 @@
-import React from 'react'
-import Snackbar from '@material-ui/core/Snackbar'
-import MuiAlert, {AlertProps} from '@mui/lab/Alert'
+import * as React from 'react';
 import {useDispatch} from "react-redux";
 import {useAppSelector} from "../../app/store";
 import {setAppErrorAC} from "../../app/app-reducer";
+import Snackbar from '@mui/material/Snackbar'
+import MuiAlert, {AlertProps} from "@mui/material/Alert";
+import Stack from "@mui/material/Stack";
+
 
 const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
-    props, ref,) {
+    props,
+    ref,
+) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
 export function ErrorSnackbar() {
-
-    const dispatch= useDispatch()
+    const dispatch = useDispatch()
     let isError = useAppSelector<string | null>(state => state.app.isError)
-    const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
+    const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
         if (reason === 'clickaway') {
             return
         }
@@ -22,17 +25,16 @@ export function ErrorSnackbar() {
     }
 
     return (
-        <Snackbar open={isError !== null}
-                  autoHideDuration={6000}
-                  onClose={handleClose}
-                  anchorOrigin={{vertical: 'bottom', horizontal: 'left'}}
-        >
-            <Alert onClose={handleClose}
-                   severity="error"
-                   sx={{width: '100%'}}
+        <Stack spacing={2} sx={{ width: '100%' }}>
+            <Snackbar open={isError !== null}
+                      autoHideDuration={6000}
+                      onClose={handleClose}
+                      anchorOrigin={{vertical: 'bottom', horizontal: 'left'}}
             >
-                {isError}
-            </Alert>
-        </Snackbar>
-    )
+                <Alert onClose={handleClose} severity="error" sx={{width: '100%'}}>
+                    {isError}
+                </Alert>
+            </Snackbar>
+        </Stack>
+    );
 }

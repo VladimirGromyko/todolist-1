@@ -1,4 +1,4 @@
-import {setAppErrorAC, setAppErrorACType, setAppStatusAC, SetAppStatusACType} from "../app/app-reducer";
+import {setAppErrorAC, SetAppErrorACType, setAppStatusAC, SetAppStatusACType} from "../app/app-reducer";
 import {Dispatch} from "redux";
 import {ResponseType} from "../api/todolist-api";
 
@@ -10,4 +10,4 @@ export const handleServerAppError  = <T>(dispatch: Dispatch<ErrorUtilsDispatchTy
     dispatch(setAppErrorAC(data.messages.length ? data.messages[0] : 'some error'))
     dispatch(setAppStatusAC('failed'))
 }
-type ErrorUtilsDispatchType = SetAppStatusACType | setAppErrorACType
+type ErrorUtilsDispatchType = SetAppStatusACType | SetAppErrorACType

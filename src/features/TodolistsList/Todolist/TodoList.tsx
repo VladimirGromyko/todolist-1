@@ -1,15 +1,13 @@
-import React, {useCallback, useEffect} from 'react'
-import {FilterType} from "./app/App";
-import {Buttons} from "./components/Buttons";
-import {AddItemForm} from "./components/AddItemForm";
-import {EditableSpan} from "./components/EditableSpan";
-import {Task} from "./Task";
-import {fetchTasksTС} from "./redux/TaskReducer";
-import {useDispatch} from "react-redux";
-import {TaskItemsType, TaskStatuses} from "./api/task-api";
+import React, {useCallback} from 'react'
+import {Buttons} from "../../../components/Buttons";
+import {AddItemForm} from "../../../components/AddItemForm";
+import {EditableSpan} from "../../../components/EditableSpan";
+import {Task} from "./Task/Task";
+import {TaskItemsType, TaskStatuses} from "../../../api/task-api";
 import IconButton from '@mui/material/IconButton';
 import Delete from '@material-ui/icons/Delete';
-import {RequestStatusType} from "./app/app-reducer";
+import {RequestStatusType} from "../../../app/app-reducer";
+import {FilterType} from "../TodolistsList";
 
 
 type TodoListPropsType = {
@@ -32,14 +30,9 @@ export const TodoList = React.memo(({
                                         updateTask, updateTodoList, ...props
                                     }: TodoListPropsType) => {
 
-    let dispatch = useDispatch()
-    useEffect(() => {
-        dispatch(fetchTasksTС(todoListId))
-    }, [dispatch, todoListId])
-
-    const removeTodoListHandler = useCallback((todoListId: string) => {
+    const removeTodoListHandler = useCallback(() => {
         removeTodoList(todoListId)
-    }, [removeTodoList])
+    }, [removeTodoList, todoListId])
 
     const addTaskHandler = useCallback((title: string) => {
         addTask(todoListId, title)
@@ -88,12 +81,13 @@ export const TodoList = React.memo(({
                               title={title}
                               callBackName={updateTodoListHandler}/>
 
-                <IconButton size="small"
-                            onClick={() => removeTodoListHandler(todoListId)}
-                            disabled={entityStatus === 'loading'}
-                >
-                    <Delete/>
-                </IconButton>
+                <span onClick={removeTodoListHandler}>
+                    <IconButton size="small"
+                                disabled={entityStatus === 'loading'}>
+                        <Delete/>
+                    </IconButton>
+                </span>
+
             </h3>
             <AddItemForm addTask={addTaskHandler}
                          entityStatus={entityStatus}/>

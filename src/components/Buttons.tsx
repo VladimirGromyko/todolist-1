@@ -1,7 +1,7 @@
 import React from "react"
 import s from './../components/Button.module.css'
-import {FilterType} from "../app/App";
 import Button from "@mui/material/Button";
+import {FilterType} from "../features/TodolistsList/TodolistsList";
 
 type ButtonPropsType = {
     name: string

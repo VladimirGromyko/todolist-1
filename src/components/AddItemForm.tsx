@@ -1,10 +1,9 @@
 import React, {ChangeEvent, KeyboardEvent, useState} from "react";
 import {RequestStatusType} from "../app/app-reducer";
-import TextField from "@mui/material/TextField";
-import IconButton from "@mui/material/IconButton";
 import {AddBox} from "@material-ui/icons";
+import TextField from "@material-ui/core/TextField";
+import IconButton from "@mui/material/IconButton";
 
-// import TextField from "@material-ui/core/TextField";
 
 type AddItemFormPropsType = {
     addTask: (title: string) => void
@@ -39,7 +38,7 @@ export const AddItemForm = React.memo(({addTask, entityStatus, ...props}: AddIte
     }
     const onKeyPressTaskHandler = (e: KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
-            if (newTitle.trim().length < 25) {
+            if (newTitle.trim().length < 180) {
                 addTaskHandler()
                 setNewTitle('')
                 setError('Title is required')
@@ -47,25 +46,24 @@ export const AddItemForm = React.memo(({addTask, entityStatus, ...props}: AddIte
         }
     }
 
-    return (
-        <div>
-            <TextField variant='outlined'
-                       size='small'
-                       error={!!error}
-                       value={newTitle}
-                       onChange={onChangeTaskHandler}
-                       onKeyPress={onKeyPressTaskHandler}
-                       label='Title'
-                       helperText={error}
-                       disabled={entityStatus === 'loading'}
+    return (<div>
+        <TextField variant='outlined'
+                   size='small'
+                   error={!!error}
+                   value={newTitle}
+                   onChange={onChangeTaskHandler}
+                   onKeyPress={onKeyPressTaskHandler}
+                   label='Title'
+                   helperText={error}
+                   disabled={entityStatus === 'loading'}
 
-            />
+        />
+        <span onClick={addTaskHandler}>
             <IconButton color='primary'
-                        onClick={addTaskHandler}
                         disabled={entityStatus === 'loading'}>
                 <AddBox/>
             </IconButton>
+        </span>
 
-        </div>
-    )
+    </div>)
 })

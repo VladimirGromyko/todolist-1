@@ -1,6 +1,6 @@
 import React, {ChangeEvent, useCallback} from 'react';
-import {EditableSpan} from "./components/EditableSpan";
-import {TaskItemsType, TaskStatuses} from "./api/task-api";
+import {EditableSpan} from "../../../../components/EditableSpan";
+import {TaskItemsType, TaskStatuses} from "../../../../api/task-api";
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 
@@ -22,11 +22,11 @@ export const Task = React.memo(({
 
     const removeTaskHandler = useCallback(() => {
         removeTask(todoListId, task.id)
-    }, [removeTask, todoListId])
+    }, [removeTask, todoListId, task.id])
 
     const onChangeCheckboxHandler = useCallback(
         (e: ChangeEvent<HTMLInputElement>) => {
-            let status = e.currentTarget.checked ? TaskStatuses.Completed: TaskStatuses.New
+            let status = e.currentTarget.checked ? TaskStatuses.Completed : TaskStatuses.New
             changeStatus(todoListId, task.id, status)
             // changeStatus(todoListId, task.id, e.currentTarget.checked)
         }, [changeStatus, todoListId, task.id])
@@ -38,8 +38,8 @@ export const Task = React.memo(({
     return <div>
         <input type="checkbox"
                checked={task.status === TaskStatuses.Completed}
-               // checked={task.status > 0 ? true : false}
-               // checked={task.isDone}
+            // checked={task.status > 0 ? true : false}
+            // checked={task.isDone}
                onChange={onChangeCheckboxHandler}
         />
         <EditableSpan
@@ -48,12 +48,14 @@ export const Task = React.memo(({
             title={task.title}
             callBackName={updateTaskHandler}
         />
-        <IconButton aria-label="delete" size="small">
-            <DeleteIcon fontSize="inherit"
-                        onClick={removeTaskHandler}/>
-        </IconButton>
+        <span onClick={removeTaskHandler}>
+            <IconButton aria-label="delete" size="small">
+                <DeleteIcon fontSize="inherit"/>
+            </IconButton>
+        </span>
 
-{/*        <button onClick={removeTaskHandler}>X</button>*/}
+
+        {/*        <button onClick={removeTaskHandler}>X</button>*/}
     </div>
 })
 

@@ -1,5 +1,5 @@
-import React, {ChangeEvent, KeyboardEvent, useCallback, useState} from 'react';
-import s from "../TodoList.module.css";
+import React, {ChangeEvent, KeyboardEvent, useState} from 'react';
+import s from "../features/TodolistsList/Todolist/TodoList.module.css";
 import {TaskStatuses} from "../api/task-api";
 
 type EditableSpanPropsType = {

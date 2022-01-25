@@ -1,111 +1,83 @@
 import React, {useCallback, useEffect} from 'react'
 import './App.css';
-import {TodoList} from "../TodoList";
-import {AddItemForm} from "../components/AddItemForm";
-import {addTaskTC, removeTaskTС, updateTaskTitleAndStatusTC} from '../redux/TaskReducer';
-import {
-    addFilterAC, addTodoListTC, fetchTodoListsTC,
-    removeTodoListTC, updateTodoListTC
-} from '../redux/TodoListReducer';
-import {useDispatch, useSelector} from 'react-redux';
-import {RootReducersType, useAppSelector} from './store';
-import {TaskItemsType, TaskStatuses} from "../api/task-api";
+import {AppRootStateType, useAppSelector} from './store';
 import {RequestStatusType} from "./app-reducer";
 import LinearProgress from "@mui/material/LinearProgress";
 import {ErrorSnackbar} from "../components/ErrorSnackbar/ErrorSnackbar";
+import {Login} from "../features/Login/Login";
+import {TodolistsList} from "../features/TodolistsList/TodolistsList";
 
 
-export type TaskType = {
-    id: string
-    title: string
-    isDone: boolean
-}
-export type FilterType = 'All' | 'Active' | 'Completed'
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
+// import LinearProgress from "@material-ui/core/LinearProgress";
+import AppBar from "@material-ui/core/AppBar";
+import Box from "@mui/material/Box";
+import {Menu} from "@material-ui/icons";
+import {Navigate, Route, Routes} from 'react-router-dom';
+import {initializeAppTC, logoutTC} from "../features/Login/authReducer";
+import {useDispatch, useSelector} from "react-redux";
+import CircularProgress from '@mui/material/CircularProgress';
 
-export type TodoListsTitleType = {
-    id: string,
-    title: string,
-    // filter: FilterType
-}
-
-export type TodoListStateType = TodoListsTitleType &
-    {
-        filter: FilterType
-        entityStatus: RequestStatusType
-    }
-export type TasksStateType = {
-    [key: string]: Array<TaskItemsType>
-}
 
 function App() {
 
-    // const status = useSelector< RootReducersType, RequestStatusType>(state => state.app.status)
+    const dispatch = useDispatch()
     const status = useAppSelector<RequestStatusType>(state => state.app.status)
+    const isInitialized = useAppSelector<boolean>(state => state.app.isInitialized)
+    const isLoggedIn = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn)
 
-    let dispatch = useDispatch()
+    const logoutHandler = useCallback( () => {
+        dispatch(logoutTC())
+    },[dispatch])
 
     useEffect(() => {
-        dispatch(fetchTodoListsTC())
+        dispatch(initializeAppTC())
     }, [dispatch])
 
-    let todoLists = useSelector<RootReducersType, TodoListStateType[]>(state => state.todoList)
-    let tasks = useSelector<RootReducersType, TasksStateType>(state => state.task)
+    if (!isInitialized) {
 
-    const removeTask = useCallback((todoListId: string, id: string) => {
-        dispatch(removeTaskTС(todoListId, id))
-    }, [dispatch])
-    const addTask = useCallback((todoListId: string, title: string) => {
-        if (title.trim()) {
-            dispatch(addTaskTC(todoListId, title.trim()))
-        }
-    }, [dispatch])
-    const updateTask = useCallback((todoListId: string, id: string, title: string) => {
-        dispatch(updateTaskTitleAndStatusTC(todoListId, id, title))
-    }, [dispatch])
-    const addFilter = useCallback((todoListId: string, value: FilterType) => {
-        dispatch(addFilterAC(todoListId, value))
-    }, [dispatch])
-    const changeStatus = useCallback((todoListId: string, id: string, status: TaskStatuses) => {
-        dispatch(updateTaskTitleAndStatusTC(todoListId, id, status))
-    }, [dispatch])
-    const removeTodoList = useCallback((todoListId: string) => {
-        dispatch(removeTodoListTC(todoListId))
-    }, [dispatch])
-    const updateTodoList = useCallback((todoListId: string, title: string) => {
-        dispatch(updateTodoListTC(todoListId, title))
-    }, [dispatch])
-    const addTodoList = useCallback((title: string) => {
-        dispatch(addTodoListTC(title))
-    }, [dispatch])
+        return <div
+            style={{position: 'fixed', top: '30%', textAlign: 'center', width: '100%'}}>
+            <CircularProgress/>
+        </div>
 
-
+    }
     return (
         <div className="App">
-            <LinearProgress/>
-            {status === "loading" && <div className="linePreloader"></div>}
-
-
-            <AddItemForm addTask={addTodoList}/>
-            {todoLists.map(m => {
-                return (
-                    <TodoList
-                        key={m.id}
-                        todoListId={m.id}
-                        title={m.title}
-                        entityStatus={m.entityStatus}
-                        tasks={tasks[m.id]}
-                        removeTask={removeTask}
-                        addFilter={addFilter}
-                        addTask={addTask}
-                        changeStatus={changeStatus}
-                        filter={m.filter}
-                        removeTodoList={removeTodoList}
-                        updateTask={updateTask}
-                        updateTodoList={updateTodoList}
-                    />
-                )
-            })}
             <ErrorSnackbar/>
+            <AppBar position="static">
+                <Toolbar>
+                    <IconButton
+                        size="large"
+                        edge="start"
+                        color="inherit"
+                        aria-label="menu"
+                        sx={{mr: 2}}
+                    >
+                        <Menu/>
+                    </IconButton>
+                    <Typography variant="h6" component="div" sx={{flexGrow: 1}}>
+                        News
+                    </Typography>
+                    {isLoggedIn && <Button color="inherit" onClick={logoutHandler}>Logout</Button>}
+                </Toolbar>
+                <Box sx={{width: '100%'}}>
+                    {status === "loading" && <LinearProgress color="error"/>}
+                </Box>
+            </AppBar>
+            {/*{status === "loading" && <div className="linePreloader"></div>}*/}
+            <Container fixed>
+                <Routes>
+                    <Route path={'/'} element={<TodolistsList/>}/> {/*demo={demo}/>*/}
+                    <Route path={'/login'} element={<Login/>}/>
+                    <Route path={'/404'} element={<h1 style={{textAlign: "center"}}>404: PAGE NOT FOUND</h1>}/>
+                    <Route path='*' element={<Navigate to={'/404'}/>}/>
+                </Routes>
+            </Container>
         </div>
     )
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import {RootReducersType, store} from "../../app/store";
+import {AppRootStateType, store} from "../../app/store";
 import App from "../../app/App";
 import {Provider} from "react-redux";
 import {combineReducers, createStore} from "redux";
@@ -88,10 +88,14 @@ const initialGlobalState = {
     app: {
         status: 'loading',
         isError: null,
-    }
+        isInitialized: false,
+    },
+    auth: {
+        isLoggedIn: true
+    },
 };
 
-export const storyBookStore = createStore(rootReducer, initialGlobalState as RootReducersType);
+export const storyBookStore = createStore(rootReducer, initialGlobalState as AppRootStateType);
 
 export const ReduxStoreProviderDecorator = (storyFn: () => React.ReactNode) => <Provider store={storyBookStore}>
     {storyFn()}
