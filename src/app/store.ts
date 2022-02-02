@@ -21,3 +21,6 @@ export const useAppSelector: TypedUseSelectorHook<AppRootStateType> = useSelecto
 
 export const store = createStore(rootReducers, applyMiddleware(thunkMiddleware))
 
+// @ts-ignore
+window.store = store
+
