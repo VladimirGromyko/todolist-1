@@ -10,37 +10,22 @@ import {handleServerAppError, handleServerNetworkError} from "../../utils/error-
 import {AxiosError} from "axios";
 import {authAPI, LoginParamsType} from "../../api/auth-api";
 import {clearTodosDataAC, clearTodosDataACType} from "../../redux/TodoListReducer";
-import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 const initialState = {
     isLoggedIn: false
 }
-// type InitialStateType = typeof initialState
+type InitialStateType = typeof initialState
 
-//with redux toolkit conception
-const slice = createSlice({
-    name: 'auth',
-    initialState: initialState,
-    reducers: {
-        setIsLoggedInAC(state, action: PayloadAction<{value:boolean}>) {
-            state.isLoggedIn = action.payload.value // immerjs
-        }
+export const authReducer = (state: InitialStateType = initialState, action: ActionsType): InitialStateType => {
+    switch (action.type) {
+        case 'login/SET-IS-LOGGED-IN':
+            return {...state, isLoggedIn: action.value}
+        default:
+            return state
     }
-})
-export const {setIsLoggedInAC} = slice.actions
-export const authReducer = slice.reducer
-
-// with redux conception
-// export const authReducer = (state: InitialStateType = initialState, action: ActionsType): InitialStateType => {
-//     switch (action.type) {
-//         case 'login/SET-IS-LOGGED-IN':
-//             return {...state, isLoggedIn: action.value}
-//         default:
-//             return state
-//     }
-// }
+}
 // actions
-// export const setIsLoggedInAC = (value: boolean) => ({type: 'login/SET-IS-LOGGED-IN', value} as const)
+export const setIsLoggedInAC = (value: boolean) => ({type: 'login/SET-IS-LOGGED-IN', value} as const)
 
 // thunks
 export const loginTC = (data: LoginParamsType) => (dispatch: Dispatch<ActionsType>) => {
@@ -49,7 +34,7 @@ export const loginTC = (data: LoginParamsType) => (dispatch: Dispatch<ActionsTyp
         .then((res) => {
             if (res.data.resultCode === 0) {
                 dispatch(setAppStatusAC('succeeded'))
-                dispatch(setIsLoggedInAC({value:true}))
+                dispatch(setIsLoggedInAC(true))
             } else {
                 handleServerAppError(dispatch, res.data)
             }
@@ -64,7 +49,7 @@ export const logoutTC = () => (dispatch: Dispatch<ActionsType>) => {
         .then((res) => {
             if (res.data.resultCode === 0) {
                 dispatch(setAppStatusAC('succeeded'))
-                dispatch(setIsLoggedInAC({value: false}))
+                dispatch(setIsLoggedInAC(false))
                 dispatch(clearTodosDataAC())
             } else {
                 handleServerAppError(dispatch, res.data)
@@ -81,7 +66,7 @@ export const initializeAppTC = () => (dispatch: Dispatch<ActionsType>) => {
         .then((res) => {
             if (res.data.resultCode === 0) {
                 dispatch(setAppStatusAC('succeeded'))
-                dispatch(setIsLoggedInAC({value:true}))
+                dispatch(setIsLoggedInAC(true))
 
             } else {
                 handleServerAppError(dispatch, res.data)

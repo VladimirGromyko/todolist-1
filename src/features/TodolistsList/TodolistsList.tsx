@@ -2,7 +2,7 @@ import {TodoList} from "./Todolist/TodoList";
 import React, {useCallback, useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "../../app/store";
-import {addTaskTC, removeTaskTС, updateTaskTitleAndStatusTC} from "../../redux/TaskReducer";
+import {addTaskTC, removeTaskTC, updateTaskTitleAndStatusTC} from "../../redux/TaskReducer";
 import {
     addFilterAC,
     addTodoListTC,
@@ -17,11 +17,11 @@ import Grid from "@material-ui/core/Grid";
 import {Paper} from "@material-ui/core";
 import {Navigate} from "react-router-dom";
 
-export type TaskType = {
+/*export type TaskType = {
     id: string
     title: string
     isDone: boolean
-}
+}*/
 export type FilterType = 'All' | 'Active' | 'Completed'
 
 export type TodoListsTitleType = {
@@ -53,7 +53,7 @@ export const TodolistsList = () => {
     }, [dispatch, isLoggedIn])
 
     const removeTask = useCallback((todoListId: string, id: string) => {
-        dispatch(removeTaskTС(todoListId, id))
+        dispatch(removeTaskTC(todoListId, id))
     }, [dispatch])
     const addTask = useCallback((todoListId: string, title: string) => {
         if (title.trim()) {

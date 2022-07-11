@@ -125,7 +125,7 @@ export const fetchTasksTС = (todoListId: string) =>
                 dispatch(setAppStatusAC('succeeded'))
             })
     }
-export const removeTaskTС = (todoListId: string, taskId: string) =>
+export const removeTaskTC = (todoListId: string, taskId: string) =>
     (dispatch: Dispatch<TasksReducerType>, getState: () => AppRootStateType): void => {
         dispatch(setAppStatusAC('loading'))
         taskApi.deleteTask(todoListId, taskId)
